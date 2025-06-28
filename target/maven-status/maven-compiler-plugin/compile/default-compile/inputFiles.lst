@@ -3,12 +3,14 @@ C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\dao
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\dao\CarreraDAO.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\dao\CursoDAO.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\dao\DocenteDAO.java
+C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\dao\LoginDAO.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\Layout\Aula_Alumno.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\Layout\Login.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\Layout\MenuAdministrador.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\Layout\MenuDocentes.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\Alumno.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\Aula.java
+C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\AulaAlumnos.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\Carrera.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\Curso.java
 C:\NetBeansProjects\proyectosistemasdeinformacion\src\main\java\com\proyecto\model\Docente.java

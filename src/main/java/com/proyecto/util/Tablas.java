@@ -4,6 +4,9 @@
  */
 package com.proyecto.util;
 
+import com.proyecto.dao.AulaDAO;
+import com.proyecto.model.Alumno;
+import com.proyecto.model.Aula;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +48,6 @@ public class Tablas {
                 int id = rsCurso.getInt("id");
                 String nombre = rsCurso.getString("nombre_curso");
 
-                // Obtener carreras asociadas
                 String sqlCarreras = "SELECT c.nombre_carrera FROM curso_carrera cc JOIN carrera c ON cc.carrera_id = c.id WHERE cc.curso_id = ?";
                 PreparedStatement psCarrera = conn.prepareStatement(sqlCarreras);
                 psCarrera.setInt(1, id);
@@ -124,7 +126,7 @@ public class Tablas {
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "❌ Error al cargar alumnos: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar alumnos: " + e.getMessage());
         }
     }
 
@@ -154,8 +156,7 @@ public class Tablas {
                 datos[3] = rs.getString("dni");
                 datos[4] = rs.getString("correo");
 
-                // Obtener cursos asignados
-                String sqlCursos = "SELECT nombre_curso FROM curso_docente cd JOIN curso c ON cd.curso_id = c.id WHERE cd.docente_id = ?";
+                String sqlCursos = "SELECT nombre_curso FROM docente_curso cd JOIN curso c ON cd.curso_id = c.id WHERE cd.docente_id = ?";
                 PreparedStatement psCursos = conn.prepareStatement(sqlCursos);
                 psCursos.setInt(1, docenteId);
                 ResultSet rsCursos = psCursos.executeQuery();
@@ -171,46 +172,42 @@ public class Tablas {
             }
 
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "❌ Error al cargar docentes: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar docentes: " + e.getMessage());
         }
     }
 
     public void TablaAula(JTable tabla) {
-        String sql = "SELECT * FROM aula";
-        DefaultTableModel modelo = new DefaultTableModel();
+        AulaDAO auladao = new AulaDAO();
+        List<Aula> aulas = auladao.obtenerTodasConAlumnos(); 
 
+        DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("ID");
         modelo.addColumn("Código Aula");
         modelo.addColumn("Aforo");
         modelo.addColumn("Alumnos Registrados");
 
-        tabla.setModel(modelo);
-        String[] datos = new String[4];
+        for (Aula a : aulas) {
+            StringBuilder nombresAlumnos = new StringBuilder();
+            List<Alumno> lista = a.getAlumnos();
 
-        try {
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-                int aulaId = rs.getInt("id");
-                datos[0] = String.valueOf(aulaId);
-                datos[1] = rs.getString("codigo_aula");
-                datos[2] = rs.getString("aforo");
-
-                // Contar alumnos asignados
-                String sqlAlumnos = "SELECT COUNT(*) FROM aula_alumno WHERE aula_id = ?";
-                PreparedStatement ps = conn.prepareStatement(sqlAlumnos);
-                ps.setInt(1, aulaId);
-                ResultSet rsAlumnos = ps.executeQuery();
-                rsAlumnos.next();
-                datos[3] = String.valueOf(rsAlumnos.getInt(1));
-
-                modelo.addRow(datos);
+            if (lista != null && !lista.isEmpty()) {
+                for (Alumno al : lista) {
+                    nombresAlumnos.append(al.getNombrealumno()).append(" ").append(al.getApellidosalumno()).append(", ");
+                }
+                nombresAlumnos.setLength(nombresAlumnos.length() - 2); 
+            } else {
+                nombresAlumnos.append("Sin alumnos");
             }
 
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "❌ Error al cargar aulas: " + e.getMessage());
+            modelo.addRow(new Object[]{
+                a.getId(),
+                a.getCodigoaula(),
+                a.getAforo(),
+                nombresAlumnos.toString()
+            });
         }
+
+        tabla.setModel(modelo);
     }
 
     public void TablaCarrera(JTable tabla) {
@@ -231,11 +228,61 @@ public class Tablas {
                 modelo.addRow(fila);
             }
 
-            tabla.setModel(modelo); // 👈 Aquí se actualiza visualmente
+            tabla.setModel(modelo);
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "❌ Error al actualizar tabla: " + e.getMessage());
         }
+    }
+
+    public void TablaSeleccionAlumno(JTable tabla) {
+        String sql = """
+            SELECT a.id, a.nombre_alumno, a.apellidos_alumno, a.dni, a.correo_alumno, c.nombre_carrera 
+            FROM alumno a 
+            JOIN carrera c ON a.carrera_id = c.id
+            """;
+
+        DefaultTableModel modelo = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class; 
+                }
+                return String.class;
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
+        };
+
+        modelo.addColumn("Seleccionar");
+        modelo.addColumn("ID");
+        modelo.addColumn("Nombre");
+        modelo.addColumn("Apellidos");
+        modelo.addColumn("DNI");
+        modelo.addColumn("Correo");
+        modelo.addColumn("Carrera");
+
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Object[] fila = new Object[7];
+                fila[0] = false;
+                fila[1] = rs.getInt("id");
+                fila[2] = rs.getString("nombre_alumno");
+                fila[3] = rs.getString("apellidos_alumno");
+                fila[4] = rs.getString("dni");
+                fila[5] = rs.getString("correo_alumno");
+                fila[6] = rs.getString("nombre_carrera");
+
+                modelo.addRow(fila);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar alumnos: " + e.getMessage());
+        }
+
+        tabla.setModel(modelo);
     }
 
 }

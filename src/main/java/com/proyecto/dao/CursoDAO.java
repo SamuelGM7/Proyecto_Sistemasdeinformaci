@@ -14,6 +14,7 @@ import com.proyecto.model.Evaluacion;
 import com.proyecto.util.Conexion;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -97,11 +98,9 @@ public class CursoDAO {
         int fila = tablaCursos.getSelectedRow();
 
         if (fila >= 0) {
-            // Obtenemos el ID del curso de la columna 0
             String idStr = tablaCursos.getValueAt(fila, 0).toString();
             int id = Integer.parseInt(idStr);
 
-            // Confirmación
             int confirmacion = JOptionPane.showConfirmDialog(null,
                     "¿Estás seguro de que deseas eliminar este curso?",
                     "Confirmar eliminación",
@@ -231,17 +230,14 @@ public class CursoDAO {
         try {
             conn.setAutoCommit(false);
 
-            // 1. Actualizar nombre
             String sql = "UPDATE curso SET nombre_curso = ? WHERE id = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, curso.getNombrecurso());
             ps.setInt(2, curso.getId());
             ps.executeUpdate();
 
-            // 2. Eliminar asociaciones existentes
             eliminarCurso(curso.getId());
 
-            // 3. Volver a guardar todo con datos actualizados
             guardarCurso(curso);
 
             conn.commit();
@@ -257,4 +253,23 @@ public class CursoDAO {
             return false;
         }
     }
+
+    public List<Curso> listarCursos() {
+        List<Curso> lista = new ArrayList<>();
+        String sql = "SELECT * FROM curso";
+        try (Statement st = conn.createStatement(); 
+             ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Curso curso = new Curso();
+                curso.setId(rs.getInt("id"));
+                curso.setNombrecurso(rs.getString("nombre_curso"));
+                lista.add(curso);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al listar cursos: " + e.getMessage());
+        }
+        return lista;
+    }
+
 }

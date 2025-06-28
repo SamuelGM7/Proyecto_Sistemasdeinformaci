@@ -55,5 +55,9 @@ public class Curso {
     public void setEvaluaciones(List<Evaluacion> evaluaciones) {
         this.evaluaciones = evaluaciones;
     }
+    @Override
+    public String toString() {
+        return nombrecurso; 
+    }
     
 }

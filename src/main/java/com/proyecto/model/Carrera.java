@@ -33,5 +33,9 @@ public class Carrera {
     public void setNombrecarrera(String nombrecarrera) {
         this.nombrecarrera = nombrecarrera;
     }
+    @Override
+    public String toString() {
+        return nombrecarrera; 
+    }
     
 }

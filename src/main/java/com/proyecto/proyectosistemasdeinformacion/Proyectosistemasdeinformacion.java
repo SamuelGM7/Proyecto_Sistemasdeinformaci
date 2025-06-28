@@ -5,6 +5,7 @@
 package com.proyecto.proyectosistemasdeinformacion;
 
 import com.proyecto.Layout.Login;
+import com.proyecto.Layout.MenuAdministrador;
 
 /**
  *
@@ -13,7 +14,7 @@ import com.proyecto.Layout.Login;
 public class Proyectosistemasdeinformacion {
 
     public static void main(String[] args) {
-       Login login = new Login();
+       MenuAdministrador login = new MenuAdministrador();
        login.setVisible(true);
     }
 }

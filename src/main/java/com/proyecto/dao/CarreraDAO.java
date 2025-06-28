@@ -8,7 +8,6 @@ package com.proyecto.dao;
  *
  * @author Samuel
  */
-
 import com.proyecto.util.Conexion;
 import com.proyecto.model.Carrera;
 import com.proyecto.util.Tablas;
@@ -22,7 +21,22 @@ public class CarreraDAO {
 
     public CarreraDAO() {
         this.conn = Conexion.getInstancia().getConexion();
-        
+
+    }
+
+    public Carrera obtenerPorNombre(String nombre) {
+        String sql = "SELECT * FROM carrera WHERE nombre_carrera = ?";
+        try (Connection conn = Conexion.getInstancia().getConexion(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, nombre);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Carrera(rs.getInt("id"),
+                                   rs.getString("nombre_carrera"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar carrera: " + e.getMessage());
+        }
+        return null;
     }
 
     // Guardar carrera
@@ -101,4 +115,5 @@ public class CarreraDAO {
         }
         return lista;
     }
+
 }

@@ -4,6 +4,7 @@
  */
 package com.proyecto.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,9 +16,11 @@ public class Aula {
     private int id;
     private String codigoaula;
     private int aforo;
-    private List<Alumno> alumnos;
+    private List<Alumno> alumnos = new ArrayList<>(); 
 
-    public Aula(){}
+    public Aula() {
+    }
+
     public Aula(int id, String codigoaula, int aforo, List<Alumno> alumnos) {
         this.id = id;
         this.codigoaula = codigoaula;

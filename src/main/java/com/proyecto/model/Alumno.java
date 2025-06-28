@@ -9,14 +9,17 @@ package com.proyecto.model;
  * @author Samuel
  */
 public class Alumno {
-    private int id; 
+
+    private int id;
     private String nombrealumno;
     private String apellidosalumno;
     private String DNI;
     private String correoalumno;
     private String carrera;
-    
-    public Alumno(){}
+
+    public Alumno() {
+    }
+
     public Alumno(int id, String nombrealumno, String apellidosalumno, String DNI, String correoalumno, String carrera) {
         this.id = id;
         this.nombrealumno = nombrealumno;
@@ -73,6 +76,10 @@ public class Alumno {
     public void setCarrera(String carrera) {
         this.carrera = carrera;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return  id + " "+ nombrealumno + " " + apellidosalumno;
+    }
+
 }
